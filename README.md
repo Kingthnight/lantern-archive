@@ -4,6 +4,8 @@ A small, local remembrance writer for the **Ghost in the Machine** challenge. Yo
 
 The app is intentionally modest: it does not impersonate the deceased or invent an afterlife conversation. It helps a living person shape a first draft from what they actually know.
 
+Architecture: [High-Level Design](docs/HLD.md) · [Low-Level Design](docs/LLD.md)
+
 ## Demo
 
 Click **Try a fictional example** in the app. It fills in three invented notes about Mira, including a blue tin of orange peels. Click **Ask locally** for a question that might prompt another story. Click **Write a remembrance**. The draft should have one sentence and one citation for each note. Edit the draft directly, then copy it or save a text file. See [the short demo video](demo.webm), [the landing screenshot](demo-hero.png), and [the workspace screenshot](demo-workspace.png).
