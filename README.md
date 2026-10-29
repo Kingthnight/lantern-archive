@@ -1,6 +1,6 @@
 # Lantern Archive
 
-A small, local remembrance writer for the **Ghost in the Machine** challenge. You enter a person's name and up to eight real details. An open-weight model suggests a follow-up question to help you remember more, then rewrites each detail as one sentence. The app attaches each sentence's source number. You can edit, copy, or save the resulting text.
+A remembrance writer that helps you preserve the small details you remember about someone. You enter a person's name and up to eight real details. An open-weight model suggests a follow-up question to help you remember more, then rewrites each detail as one sentence. The app attaches each sentence's source number. You can edit, copy, or save the resulting text.
 
 The app is intentionally modest: it does not impersonate the deceased or invent an afterlife conversation. It helps a living person shape a first draft from what they actually know.
 
