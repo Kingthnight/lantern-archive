@@ -13,6 +13,8 @@ messaging and does not require downloading weights on Render. Follow the
 configuration. The offline instructions below continue to run inference on
 your own computer.
 
+[Deploy the hosted demo on Render](https://render.com/deploy?repo=https://github.com/Kingthnight/lantern-archive)
+
 ## Demo
 
 Click **Try a fictional example** in the app. It fills in three invented notes about Mira, including a blue tin of orange peels. Click **Ask locally** for a question that might prompt another story. Click **Write a remembrance**. The draft should have one sentence and one citation for each note. Edit the draft directly, then copy it or save a text file. See [the short demo video](demo.webm), [the landing screenshot](demo-hero.png), and [the workspace screenshot](demo-workspace.png).
