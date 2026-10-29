@@ -118,3 +118,20 @@ The browser displays a model-loading state until `/api/status` reports ready. It
 - Model calls are serialized; concurrent requests queue behind the lock. The UI does not provide cancellation or streaming.
 - Ports are fixed. The success response's model label names the tested Qwen model even if `--model` points to another compatible GGUF.
 - Browser `localStorage` is unencrypted and tied to the browser profile and origin. No automatic draft persistence or backup exists.
+# Hosted entry point
+
+`hosted.HostedApplication` is a WSGI callable. `GET /healthz` checks liveness
+without inference. `GET /api/status` reports configuration readiness, not a
+live provider test. Static routes serve the shared frontend with
+`data-mode="hosted"`; local mode uses `data-mode="local"`.
+
+The hosted POST routes validate origin, JSON content type, request length, and
+memory inputs before reserving an inference attempt. A semaphore allows one
+upstream request at a time; a locked deque limits attempts over a rolling hour.
+These process-local guardrails require one Gunicorn worker and reset on restart.
+
+`DigitalOceanClient` posts to the documented HTTPS chat-completions endpoint,
+using `max_completion_tokens` and a JSON-shape instruction. It omits llama.cpp's
+schema and template extensions. Shared `generate` and `ask_question` functions
+accept an injected completion callable and validate its result. Provider errors
+are sanitized; payloads and credentials are not logged.

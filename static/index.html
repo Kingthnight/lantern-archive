@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode="local">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,14 +11,15 @@
   <div class="grain" aria-hidden="true"></div>
   <header class="topbar">
     <a class="brand" href="/" aria-label="Lantern Archive home"><span class="brand-mark">✦</span> LANTERN <span class="brand-light">ARCHIVE</span></a>
-    <div class="status" id="status" role="status"><span class="status-dot"></span><span id="status-text">Starting local model</span></div>
+    <div class="status" id="status" role="status"><span class="status-dot"></span><span id="status-text">Checking the model</span></div>
   </header>
   <main>
     <section class="hero">
-      <div class="hero-eyebrow"><span class="line"></span> A PRIVATE SPACE TO REMEMBER <span class="line"></span></div>
+      <div class="hero-eyebrow"><span class="line"></span><span class="only-local">A PRIVATE SPACE TO REMEMBER</span><span class="only-hosted">A SPACE TO REMEMBER · PUBLIC DEMO</span><span class="line"></span></div>
       <div class="lantern-art" aria-hidden="true"><div class="halo"></div><div class="flame"></div><div class="vessel"></div></div>
       <h1>Keep a light on<br><em>for their story.</em></h1>
-      <p>Gather the little things you remember. An open model running on your computer helps shape them into a remembrance you can make your own.</p>
+      <p class="only-local">Gather the little things you remember. An open model running on your computer helps shape them into a remembrance you can make your own.</p>
+      <p class="only-hosted">Try the fictional example. An open model hosted on DigitalOcean helps shape these details into a remembrance you can make your own.</p>
       <a class="hero-link" href="#workspace">Begin with a memory <span aria-hidden="true">↘</span></a>
     </section>
 
@@ -35,24 +36,24 @@
           <div class="card-head"><span class="icon">✺</span><span>THE DETAILS YOU REMEMBER</span><span class="card-step" id="memory-count">00 / 08</span></div>
           <div id="memories" class="memories"></div>
           <button class="add-button" id="add-memory" type="button"><span>＋</span> Add another memory</button>
-          <div class="question-box"><div><span class="question-eyebrow">A GENTLE PROMPT</span><p id="question-text">Need help recalling one more detail?</p></div><button id="ask-question" type="button" disabled>Ask locally ↗</button></div>
+          <div class="question-box"><div><span class="question-eyebrow">A GENTLE PROMPT</span><p id="question-text">Need help recalling one more detail?</p></div><button id="ask-question" type="button" disabled><span class="only-local">Ask locally ↗</span><span class="only-hosted">Ask a question ↗</span></button></div>
           <div class="editor-footer"><button class="text-button" id="sample" type="button">Try a fictional example</button><button class="text-button" id="clear" type="button">Clear all</button></div>
         </div>
         <div class="right-column">
           <div class="card output-card">
             <div class="card-head"><span class="icon">✧</span><span>THE REMEMBRANCE</span><span class="card-step">02</span></div>
-            <div class="output-empty" id="empty"><div class="empty-illustration">✦</div><h3>A space for their story.</h3><p>Add a few memories, then let the local model help you find a first draft.</p></div>
+            <div class="output-empty" id="empty"><div class="empty-illustration">✦</div><h3>A space for their story.</h3><p>Add a few memories, then let the model help you find a first draft.</p></div>
             <div class="output-content" id="output-content" hidden><div class="output-overline">A FIRST DRAFT · YOUR WORDS TO KEEP</div><div id="draft" class="draft" contenteditable="true" role="textbox" aria-label="Editable remembrance draft" aria-multiline="true"></div><p class="edit-note">This is a starting point. Edit freely; check every detail against what you shared.</p></div>
-            <button class="generate-button" id="generate" type="button" disabled><span id="generate-label">Preparing the local model…</span><span aria-hidden="true">↗</span></button>
+            <button class="generate-button" id="generate" type="button" disabled><span id="generate-label">Checking the model…</span><span aria-hidden="true">↗</span></button>
             <div class="output-actions"><button class="text-button" id="copy" type="button" disabled>Copy draft ↗</button><button class="text-button" id="download" type="button" disabled>Save as text ↓</button></div>
           </div>
-          <div class="privacy-card"><span class="privacy-icon">◇</span><div><strong>Their story stays with you.</strong><p>Memories are stored in this browser. Writing happens through a model on this computer. Nothing is sent to a cloud service.</p></div></div>
+          <div class="privacy-card"><span class="privacy-icon">◇</span><div><strong class="only-local">Their story stays with you.</strong><strong class="only-hosted">A hosted demo. Please use fictional details.</strong><p class="only-local">Memories are stored in this browser. Writing happens through a model on this computer. Nothing is sent to a cloud service.</p><p class="only-hosted">Submitting sends the name and notes through Render to DigitalOcean for generation. Notes are also saved in this browser; the draft is not automatically saved. Use the downloadable offline version for memories you want to keep on your own computer.</p></div></div>
         </div>
       </div>
     </section>
     <section class="closing"><span>✳</span><p>Remembering is a living act.<br><em>Keep what feels true.</em></p></section>
   </main>
-  <footer><span>✦ LANTERN ARCHIVE</span><span>Made for the stories we carry.</span><span>LOCAL BY DESIGN · OPEN BY CHOICE</span></footer>
+  <footer><span>✦ LANTERN ARCHIVE</span><span>Made for the stories we carry.</span><span class="only-local">LOCAL BY DESIGN · OPEN BY CHOICE</span><span class="only-hosted">OPEN MODEL · HOSTED DEMO</span></footer>
   <script src="/app.js" defer></script>
 </body>
 </html>

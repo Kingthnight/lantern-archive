@@ -6,6 +6,13 @@ The app is intentionally modest: it does not impersonate the deceased or invent 
 
 Architecture: [High-Level Design](docs/HLD.md) · [Low-Level Design](docs/LLD.md)
 
+An optional **hosted demo** runs the web app on Render Free and calls an open
+model through DigitalOcean Serverless Inference. It has separate privacy
+messaging and does not require downloading weights on Render. Follow the
+[hosted deployment guide](docs/DEPLOYMENT.md); `render.yaml` contains the service
+configuration. The offline instructions below continue to run inference on
+your own computer.
+
 ## Demo
 
 Click **Try a fictional example** in the app. It fills in three invented notes about Mira, including a blue tin of orange peels. Click **Ask locally** for a question that might prompt another story. Click **Write a remembrance**. The draft should have one sentence and one citation for each note. Edit the draft directly, then copy it or save a text file. See [the short demo video](demo.webm), [the landing screenshot](demo-hero.png), and [the workspace screenshot](demo-workspace.png).

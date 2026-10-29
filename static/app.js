@@ -1,5 +1,6 @@
 const $ = (id) => document.getElementById(id);
 const STORAGE_KEY = 'lantern-archive-v1';
+const HOSTED = document.documentElement.dataset.mode === 'hosted';
 const state = {name: '', relationship: '', memories: ['', '']};
 let ready = false;
 let busy = false;
@@ -41,17 +42,19 @@ function renderMemories() {
 function setStatus(isReady) {
   ready = isReady;
   $('status').classList.toggle('ready', isReady);
-  $('status-text').textContent = isReady ? 'Local model ready' : 'Starting local model';
-  if (!busy) { $('generate').disabled = !isReady; $('generate-label').textContent = isReady ? 'Write a remembrance' : 'Preparing the local model…'; }
-  $('ask-question').disabled = !isReady;
+  $('status-text').textContent = isReady ? (HOSTED ? 'Hosted demo ready' : 'Local model ready') : (HOSTED ? 'Hosted model unavailable' : 'Starting local model');
+  if (!busy) { $('generate').disabled = !isReady; $('generate-label').textContent = isReady ? 'Write a remembrance' : 'Checking the model…'; }
+  $('ask-question').disabled = busy || !isReady;
 }
 
 async function pollStatus() {
   try {
     const response = await fetch('/api/status', {cache: 'no-store'});
     const result = await response.json(); setStatus(Boolean(result.ready));
-    if (result.error) { $('status-text').textContent = result.error; $('generate-label').textContent = 'Local model unavailable'; }
+    if (result.error) { $('status-text').textContent = result.error; $('generate-label').textContent = 'Model unavailable'; }
   } catch (_) { setStatus(false); }
+  // Only poll while a local model starts. An idle hosted tab must not keep Render awake.
+  if (!HOSTED && !ready) setTimeout(pollStatus, 3000);
 }
 
 async function generate() {
@@ -60,31 +63,31 @@ async function generate() {
   if (!state.name || !state.memories.some(value => value.trim())) {
     alert('Add a name and at least one memory before writing.'); return;
   }
-  busy = true; $('generate').disabled = true; $('generate-label').textContent = 'Writing locally…';
+  busy = true; $('generate').disabled = true; $('ask-question').disabled = true; $('generate-label').textContent = HOSTED ? 'Writing…' : 'Writing locally…';
   try {
     const response = await fetch('/api/generate', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(state)});
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error || 'The local model could not complete the draft.');
+    if (!response.ok) throw new Error(result.error || 'The model could not complete the draft.');
     $('draft').textContent = result.draft; $('empty').hidden = true; $('output-content').hidden = false;
     $('copy').disabled = false; $('download').disabled = false;
   } catch (error) { alert(error.message); }
-  finally { busy = false; $('generate').disabled = !ready; $('generate-label').textContent = 'Rewrite the remembrance'; }
+  finally { busy = false; $('generate').disabled = !ready; $('ask-question').disabled = !ready; $('generate-label').textContent = 'Rewrite the remembrance'; }
 }
 
 async function askQuestion() {
-  if (!ready) return;
+  if (!ready || busy) return;
   state.name = $('name').value.trim(); state.relationship = $('relationship').value.trim(); save();
   if (!state.name || !state.memories.some(value => value.trim())) {
     alert('Add a name and at least one memory to get a question.'); return;
   }
-  $('ask-question').disabled = true; $('question-text').textContent = 'Thinking of a question…';
+  busy = true; $('generate').disabled = true; $('ask-question').disabled = true; $('question-text').textContent = 'Thinking of a question…';
   try {
     const response = await fetch('/api/question', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(state)});
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error || 'The local model could not suggest a question.');
+    if (!response.ok) throw new Error(result.error || 'The model could not suggest a question.');
     $('question-text').textContent = result.question;
   } catch (error) { $('question-text').textContent = error.message; }
-  finally { $('ask-question').disabled = !ready; }
+  finally { busy = false; $('generate').disabled = !ready; $('ask-question').disabled = !ready; }
 }
 
 function clearAll() {
@@ -122,4 +125,4 @@ $('generate').addEventListener('click', generate);
 $('ask-question').addEventListener('click', askQuestion);
 $('copy').addEventListener('click', async () => { await navigator.clipboard.writeText($('draft').innerText.trim()); $('copy').textContent = 'Copied ✓'; setTimeout(() => $('copy').textContent = 'Copy draft ↗', 2000); });
 $('download').addEventListener('click', downloadDraft);
-pollStatus(); setInterval(pollStatus, 3000);
+pollStatus();

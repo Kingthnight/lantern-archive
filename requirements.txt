@@ -1,0 +1,2 @@
+# Only needed for the hosted Linux service. The offline app uses Python's stdlib.
+gunicorn==26.2.0

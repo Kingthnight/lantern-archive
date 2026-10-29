@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: lantern-archive
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn hosted:application --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /healthz
+    envVars:
+      - key: DO_MODEL_ACCESS_KEY
+        sync: false
+      - key: DO_MODEL
+        value: llama-4-maverick
+      - key: DEMO_REQUESTS_PER_HOUR
+        value: "60"

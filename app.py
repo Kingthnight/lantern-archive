@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -95,9 +96,13 @@ def complete(body: dict[str, object]) -> str:
     return re.sub(r"<think>.*?</think>", "", str(choice.get("content") or ""), flags=re.DOTALL).strip()
 
 
-def generate(payload: object) -> dict[str, object]:
+def generate(
+    payload: object,
+    completion: Callable[[dict[str, object]], str] | None = None,
+    model_label: str = "Qwen3.5-4B / llama.cpp",
+) -> dict[str, object]:
     name, relationship, memories = normalize_payload(payload)
-    raw = complete({
+    raw = (completion or complete)({
         "messages": build_messages(name, relationship, memories),
         "temperature": 0.35,
         "max_tokens": 300,
@@ -114,18 +119,21 @@ def generate(payload: object) -> dict[str, object]:
     try:
         lines = json.loads(raw)["lines"]
     except (ValueError, KeyError, TypeError) as exc:
-        raise RuntimeError("The local model did not return a usable draft. Please try again.") from exc
+        raise RuntimeError("The model did not return a usable draft. Please try again.") from exc
     if not isinstance(lines, list) or len(lines) != len(memories) or any(not isinstance(line, str) or not line.strip() for line in lines):
-        raise RuntimeError("The local model missed a memory. Please try again.")
+        raise RuntimeError("The model missed a memory. Please try again.")
     cited = "\n".join(f"{line.strip()} [{i}]" for i, line in enumerate(lines, 1))
     draft = f"For {name}, these are the details we carry forward.\n\n{cited}"
-    return {"draft": draft, "model": "Qwen3.5-4B / llama.cpp", "source_count": len(memories)}
+    return {"draft": draft, "model": model_label, "source_count": len(memories)}
 
 
-def ask_question(payload: object) -> dict[str, str]:
+def ask_question(
+    payload: object,
+    completion: Callable[[dict[str, object]], str] | None = None,
+) -> dict[str, str]:
     name, relationship, memories = normalize_payload(payload)
     numbered = "\n".join(f"[{i}] {memory}" for i, memory in enumerate(memories, 1))
-    raw = complete({
+    raw = (completion or complete)({
         "messages": [
             {"role": "system", "content": (
                 "You are a gentle oral-history interviewer. Ask exactly one short, "
@@ -148,9 +156,9 @@ def ask_question(payload: object) -> dict[str, str]:
     try:
         question = json.loads(raw)["question"]
     except (ValueError, KeyError, TypeError) as exc:
-        raise RuntimeError("The local model did not return a question. Please try again.") from exc
+        raise RuntimeError("The model did not return a question. Please try again.") from exc
     if not isinstance(question, str) or not question.strip():
-        raise RuntimeError("The local model did not return a question. Please try again.")
+        raise RuntimeError("The model did not return a question. Please try again.")
     return {"question": question.strip()[:300]}
 
 

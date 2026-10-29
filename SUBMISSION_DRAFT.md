@@ -20,6 +20,11 @@ You enter a name and up to eight small memories. **Ask locally** suggests a gent
 
 ## Demo
 
+<!-- If the hosted demo is deployed, add its actual URL and record a real hosted
+run. Clearly distinguish it from the local demonstration below. The hosted
+version sends submitted notes through Render to DigitalOcean; use fictional
+data. Do not describe that version as offline or as keeping notes on-device. -->
+
 <!-- Replace the image path with an uploaded DEV image URL before publishing. -->
 ![Lantern Archive demo](demo-workspace.png)
 
@@ -27,15 +32,21 @@ For the fictional Mira example, the local model asked: “What else do you know 
 
 <!-- Upload demo.webm and embed its DEV-hosted URL here before publishing. -->
 
-No login is needed. To try it, follow the [README setup instructions](REPLACE_WITH_PUBLIC_REPOSITORY_URL), start the app, open `http://127.0.0.1:8765`, and click **Try a fictional example**.
+No login is needed. To try it, follow the [README setup instructions](https://github.com/Kingthnight/lantern-archive), start the app, open `http://127.0.0.1:8765`, and click **Try a fictional example**.
 
 ## Code
 
-The [MIT-licensed source and setup guide](REPLACE_WITH_PUBLIC_REPOSITORY_URL) include the Python server, frontend, and model download steps. The model weights are downloaded separately under their own license.
+The [MIT-licensed source and setup guide](https://github.com/Kingthnight/lantern-archive) include the Python server, frontend, and model download steps. The model weights are downloaded separately under their own license.
 
 ## How I Built It
 
 The frontend is plain HTML, CSS, and JavaScript. A small Python standard-library server serves the page and starts `llama-server`, the HTTP runtime from [llama.cpp](https://github.com/ggml-org/llama.cpp). The model is a Q4_K_M GGUF conversion of [Qwen3.5-4B](https://huggingface.co/Qwen/Qwen3.5-4B), with weights downloaded once from [bartowski's conversion](https://huggingface.co/bartowski/Qwen_Qwen3.5-4B-GGUF). Both model repositories identify the weights as Apache 2.0 licensed.
+
+The optional hosted entry point uses Gunicorn on Render and DigitalOcean
+Serverless Inference. Its initial configuration selects the open-weight
+`llama-4-maverick` model. It validates JSON responses and line counts, caps
+inference attempts, and keeps the model access key on the server. Hosted
+inference uses a JSON prompt rather than the local llama.cpp schema extension.
 
 ```mermaid
 flowchart LR

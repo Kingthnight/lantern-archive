@@ -58,3 +58,20 @@ flowchart LR
 ## 7. Known limits
 
 The prototype supports English, has no automatic backup or account sync, and does not save generated drafts unless the user copies or downloads them. Browser storage is local but not encrypted. A model can still change a nuance or add unsupported content inside a sentence. See [LLD.md](LLD.md) for the exact contracts and failure behavior.
+# Optional hosted demo
+
+The `hosted.py` WSGI entry point serves the same frontend through Gunicorn on
+Render Free. It calls DigitalOcean Serverless Inference over HTTPS using a
+server-side Model Access Key. `app.py` remains the offline entry point.
+
+```mermaid
+flowchart LR
+    Browser[Browser: localStorage notes] --> Render[Render: WSGI application]
+    Render --> DO[DigitalOcean: open-weight model]
+    DO --> Render
+    Render --> Browser
+```
+
+The hosted page discloses the cloud processing before submission. No app
+database is required. See [deployment instructions](DEPLOYMENT.md) for
+environment variables, request limits, free-tier behavior, and shutdown.
